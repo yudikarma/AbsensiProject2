@@ -41,6 +41,7 @@ import com.example.alfattah.absensiproject.fragment_mainActivity.DashboardMonito
 import com.example.alfattah.absensiproject.fragment_mainActivity.InputDataPerusahaanFragment;
 import com.example.alfattah.absensiproject.fragment_mainActivity.SettingsFragment;
 import com.example.alfattah.absensiproject.utils.PreferenceManager;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -80,9 +81,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawer;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     @BindView(R.id.toolbar_appbar)
-     Toolbar toolbar;
+    Toolbar toolbar;
     @BindView(R.id.navigationMenu)
-     NavigationView navigationView;
+    NavigationView navigationView;
 
     private PreferenceManager preferenceManager;
 
@@ -99,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        FirebaseApp.initializeApp(MainActivity.this);
+        mAuth = FirebaseAuth.getInstance();
         //toolbar action
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
@@ -124,7 +127,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         //Getting Uid user
-        mAuth = FirebaseAuth.getInstance();
+
+
         if (mAuth.getCurrentUser() != null) {
 
 
@@ -217,16 +221,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     private void setdashbourUI(String role) {
 
-           if (role.equalsIgnoreCase("staff")){
-               FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-               fragmentTransaction.replace(R.id.frame_main, dashboardFragment);
-               fragmentTransaction.commitAllowingStateLoss();
+        if (role.equalsIgnoreCase("staff")){
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.frame_main, dashboardFragment);
+            fragmentTransaction.commitAllowingStateLoss();
 
-           }else {
-               checkdataperusahaan();
+        }else {
+            checkdataperusahaan();
 
 
-       }
+        }
 
     }
 
@@ -305,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.hasChild("DataPerusahaan")){
                     //belum punya
-                     Log.i("tidak ada database", "DataPerusahaan");
+                    Log.i("tidak ada database", "DataPerusahaan");
                     // Hiding the title bar has to happen before the view is created
                    /* requestWindowFeature(Window.FEATURE_NO_TITLE);
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
@@ -348,18 +352,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.dashboard:
 
                 /*setFragment(dashboardFragment);*/
-               String cekrole = preferenceManager.ambilRole();
-               Log.i("PREFMANAGER ROLE", ""+cekrole);
-               if (cekrole.equalsIgnoreCase("staff")){
-                   FragmentManager manager = getSupportFragmentManager();
-                   manager.beginTransaction().replace(R.id.frame_main, dashboardFragment).commit();
-                   break;
-               }else if (cekrole.equalsIgnoreCase("Monitoring")){
-                   checkdataperusahaan();
-                   break;
+                String cekrole = preferenceManager.ambilRole();
+                Log.i("PREFMANAGER ROLE", ""+cekrole);
+                if (cekrole.equalsIgnoreCase("staff")){
+                    FragmentManager manager = getSupportFragmentManager();
+                    manager.beginTransaction().replace(R.id.frame_main, dashboardFragment).commit();
+                    break;
+                }else if (cekrole.equalsIgnoreCase("Monitoring")){
+                    checkdataperusahaan();
+                    break;
 
-               }
-               break;
+                }
+                break;
 
             case R.id.acountSettings:
                 /*setFragment(settingsFragment);*/
